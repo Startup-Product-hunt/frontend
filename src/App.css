@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* buttons */
+.button {
+  padding: 2px 16px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+button{
+  cursor: pointer;
+}
+
+/* input */
+.input {
+  padding: 5px 6px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #3182ce;
+  
+}
+
