@@ -15,10 +15,10 @@ const Home = () => {
     <Layout>
       <div className="bg-blue-950 text-white px-4 md:px-32 py-8 md:py-12">
         {/* Header */}
-        <div className="text-2xl md:text-4xl flex flex-col md:flex-row justify-between gap-2 md:gap-0">
-          <Link to="/profile" className="font-bold">
+        <div className="text-2xl md:text-4xl font-bold flex flex-col md:flex-row justify-between gap-2 md:gap-0">
+         
             Welcome, Katie
-          </Link>
+        
           <GrAnnounce className="text-2xl md:text-3xl" />
         </div>
 
