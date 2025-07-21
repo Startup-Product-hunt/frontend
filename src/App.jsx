@@ -6,6 +6,7 @@ import Profile from './Pages/ProfilePage/Profile'
 import ExploreBusiness from './Pages/ExplorteBusinessPages.jsx/ExploreBusiness'
 import Event from './Pages/EventPages/Event'
 
+
 function App() {
   
 

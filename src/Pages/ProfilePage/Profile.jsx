@@ -1,18 +1,46 @@
-import React, { useState } from "react";
-import img from "/images/demo.jpeg";
+import React, { useEffect, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
-import { FaPhone } from "react-icons/fa6";
-import { FaTimes } from "react-icons/fa";
+import { FaPhone, FaTimes } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
 import Products from "./Products";
 import Layout from "../../Components/Layout/Layout";
+import api from "../../api/axios";
+import toast from "react-hot-toast";
 
-const Posts = () => <div className="p-4">📝 Posts Section</div>;
-const Reels = () => <div className="p-4">🎬 Reels Section</div>;
+const Posts = () => <div className="p-4">Posts Section</div>;
+const Reels = () => <div className="p-4">Reels Section</div>;
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("products");
   const [zoomed, setZoomed] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get("/user/profile");
+        setUser(res.data);
+      } catch (err) {
+        toast.error("Failed to load profile");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center bg-white">
+        <div className="w-10 h-10 border-4 border-gray-300 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <Layout>
@@ -21,24 +49,21 @@ const Profile = () => {
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <img
-              src={img}
+              src={user.profilePic || "/images/demo.jpeg"}
               alt="Profile"
               onClick={() => setZoomed(true)}
               className="w-16 h-16 rounded-full object-cover cursor-pointer transition hover:scale-105"
             />
             {zoomed && (
               <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-                {/* Close Icon */}
                 <button
                   className="absolute top-6 right-6 text-white text-3xl z-50 hover:text-blue-700 transition"
                   onClick={() => setZoomed(false)}
                 >
                   <FaTimes />
                 </button>
-
-                {/* Zoomed Image */}
                 <img
-                  src={img}
+                  src={user.profilePic || "/images/demo.jpeg"}
                   alt="Zoomed"
                   className="max-w-full max-h-[90%] rounded-lg object-contain transition duration-300"
                 />
@@ -46,10 +71,8 @@ const Profile = () => {
             )}
 
             <div>
-              <p className="text-2xl font-semibold">Divine Fashion</p>
-              <p className="text-gray-500 text-md">
-                Stylish apparels & accessories
-              </p>
+              <p className="text-2xl font-semibold">{user.name}</p>
+              <p className="text-gray-500 text-md">{user.bio || "No bio yet"}</p>
             </div>
           </div>
 
@@ -59,31 +82,34 @@ const Profile = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="mt-6  space-y-1 text-sm text-gray-600">
+        <div className="mt-6 space-y-1 text-sm text-gray-600">
           <p className="flex gap-2 items-center">
             <MdOutlineMail />
-            divinefashion@example.com
+            {user.email}
           </p>
           <p className="flex gap-2 items-center">
             <FaPhone />
             +91 9876543210
           </p>
           <p className="flex gap-2 items-center">
-            <CiLocationOn /> Delhi, India
+            <CiLocationOn />
+            {user.location || "Not specified"}
           </p>
         </div>
 
         {/* Tags */}
-        <div className="mt-6  flex flex-wrap gap-2">
-          {["Clothing", "Accessories", "Fashion", "Lifestyle"].map(
-            (tag, index) => (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {user.tags.length > 0 ? (
+            user.tags.map((tag, index) => (
               <span
                 key={index}
                 className="px-3 py-1 text-sm bg-gray-200 text-gray-800 rounded-full"
               >
                 {tag}
               </span>
-            )
+            ))
+          ) : (
+            <span className="text-sm text-gray-400">No tags added</span>
           )}
         </div>
 
