@@ -5,7 +5,9 @@ import { CiLocationOn } from "react-icons/ci";
 import Products from "./Products";
 import Layout from "../../Components/Layout/Layout";
 import api from "../../api/axios";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
+import { MdEdit } from "react-icons/md";
+import ProfileEditModal from "../../Components/Modals/ProfileEditModel"; // adjust path if needed
 
 const Posts = () => <div className="p-4">Posts Section</div>;
 const Reels = () => <div className="p-4">Reels Section</div>;
@@ -15,6 +17,7 @@ const Profile = () => {
   const [zoomed, setZoomed] = useState(false);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -31,6 +34,21 @@ const Profile = () => {
 
     fetchProfile();
   }, []);
+  const handleProfileUpdate = async (formDataToSend) => {
+  try {
+    const res = await api.patch("/user/profile", formDataToSend, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    toast.success("Profile updated successfully");
+    setUser(res.data);
+  } catch (err) {
+    toast.error("Update failed");
+    console.error(err);
+  }
+};
+
 
   if (loading) {
     return (
@@ -71,8 +89,19 @@ const Profile = () => {
             )}
 
             <div>
-              <p className="text-2xl font-semibold">{user.name}</p>
-              <p className="text-gray-500 text-md">{user.bio || "No bio yet"}</p>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-semibold">{user.name}</p>
+                <button
+                  onClick={() => setEditOpen(true)}
+                  className="text-gray-500 hover:text-blue-600 transition"
+                  title="Edit Profile"
+                >
+                  <MdEdit size={20} />
+                </button>
+              </div>
+              <p className="text-gray-500 text-md">
+                {user.bio || "No bio yet"}
+              </p>
             </div>
           </div>
 
@@ -89,7 +118,7 @@ const Profile = () => {
           </p>
           <p className="flex gap-2 items-center">
             <FaPhone />
-            +91 9876543210
+           {user.phone || "NA"}
           </p>
           <p className="flex gap-2 items-center">
             <CiLocationOn />
@@ -140,6 +169,13 @@ const Profile = () => {
           {activeTab === "reels" && <Reels />}
         </div>
       </div>
+      {editOpen && (
+        <ProfileEditModal
+          user={user}
+          onClose={() => setEditOpen(false)}
+          onSave={handleProfileUpdate}
+        />
+      )}
     </Layout>
   );
 };
