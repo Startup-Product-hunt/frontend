@@ -96,6 +96,18 @@ const Header = () => {
                     >
                       Profile
                     </Link>
+
+                    {/* Show Admin Dashboard if role === admin */}
+                    {user?.role === "admin" && (
+                      <Link
+                        to="/admin/dashboard"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={() => setDropdownOpen(false)}
+                      >
+                        Admin Dashboard
+                      </Link>
+                    )}
+
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -127,7 +139,11 @@ const Header = () => {
         {menuOpen && (
           <div className="md:hidden bg-white shadow-md">
             <nav className="flex flex-col space-y-4 px-6 py-4 text-gray-700 font-medium">
-              <Link to="/" onClick={closeMenu} className="hover:text-indigo-500">
+              <Link
+                to="/"
+                onClick={closeMenu}
+                className="hover:text-indigo-500"
+              >
                 Home
               </Link>
               <Link
@@ -153,6 +169,16 @@ const Header = () => {
                   >
                     Profile
                   </Link>
+                  {user?.role === "admin" && (
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={closeMenu}
+                      className="hover:text-indigo-500"
+                    >
+                      Admin Dashboard
+                    </Link>
+                  )}
+
                   <button
                     onClick={() => {
                       handleLogout();

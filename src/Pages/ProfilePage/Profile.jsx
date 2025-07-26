@@ -76,7 +76,7 @@ const Profile = () => {
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <img
-              src={user.profilePic || "/images/demo.jpeg"}
+              src={user.profilePic || "/images/profile.png"}
               alt="Profile"
               onClick={() => setZoomed(true)}
               className="w-16 h-16 rounded-full object-cover cursor-pointer transition hover:scale-105"
@@ -90,7 +90,7 @@ const Profile = () => {
                   <FaTimes />
                 </button>
                 <img
-                  src={user.profilePic || "/images/demo.jpeg"}
+                  src={user.profilePic || "/images/profile.png"}
                   alt="Zoomed"
                   className="max-w-full max-h-[90%] rounded-lg object-contain transition duration-300"
                 />

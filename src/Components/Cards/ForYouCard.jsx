@@ -1,14 +1,24 @@
 import React from 'react';
 
-const ForYouCard = ({ title, description, profileName, mainImage, profileImage }) => {
+const ForYouCard = ({ title, description, profileName, mainImage, profileImage, category, price }) => {
   return (
-    <div className="w-full max-w-sm h-96 rounded-lg overflow-hidden shadow-lg flex flex-col">
-      {/* 60% Image */}
-      <div className="h-[60%] w-full">
-        <img src={mainImage} alt="Main" className="w-full h-full object-cover" />
+    <div className="w-full bg-white max-w-sm h-96 rounded-lg overflow-hidden shadow-lg flex flex-col">
+      {/* Image with Category & Price */}
+      <div className="h-[60%] w-full relative">
+        <img src={mainImage} alt={title} className="w-full h-full object-cover" />
+
+        {/* Category - bottom-left */}
+        <span className="absolute bottom-2 left-2 bg-black bg-opacity-60 text-white text-xs px-2 py-1 rounded">
+          {category}
+        </span>
+
+        {/* Price - bottom-right */}
+        <span className="absolute bottom-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded">
+          ${price}
+        </span>
       </div>
 
-      {/* 40% Content */}
+      {/* Content */}
       <div className="h-[40%] p-3 flex flex-col bg-[#383838] justify-between">
         {/* Title & Description */}
         <div>
@@ -24,10 +34,10 @@ const ForYouCard = ({ title, description, profileName, mainImage, profileImage }
 
         {/* Buttons */}
         <div className="flex justify-between">
-          <button className="button rounded-md border bg-white text-gray-900 border-gray-400 hover:bg-gray-200 transition">
+          <button className="px-3 py-1 rounded-md border bg-white text-gray-900 border-gray-400 hover:bg-gray-200 transition">
             Buy
           </button>
-          <button className="button rounded-md bg-blue-700 text-white hover:bg-blue-800 transition">
+          <button className="px-3 py-1 rounded-md bg-blue-700 text-white hover:bg-blue-800 transition">
             Add to Cart
           </button>
         </div>

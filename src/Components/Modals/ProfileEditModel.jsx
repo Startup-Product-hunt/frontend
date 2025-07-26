@@ -9,6 +9,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
     bio: "",
     location: "",
     tags: "",
+    phone: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -19,6 +20,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
         name: user.name || "",
         profilePic: user.profilePic || "",
         bio: user.bio || "",
+        phone: user.phone || "",
         location: user.location || "",
         tags: user.tags?.join(", ") || "", // convert array to comma-separated string
       });
@@ -47,6 +49,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
     formDataToSend.append("name", formData.name);
     formDataToSend.append("bio", formData.bio);
     formDataToSend.append("location", formData.location);
+    formDataToSend.append("phone", formData.phone);
 
     // Convert tags string to array
     const tagsArray = formData.tags
@@ -77,7 +80,9 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
           &times;
         </button>
 
-        <h2 className="text-2xl font-semibold mb-4 text-center">Edit Profile</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          Edit Profile
+        </h2>
 
         {/* Form Fields */}
         <div className="space-y-4">
@@ -88,12 +93,6 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-          />
-
-          <FileUpload
-            label="Upload Profile Pic"
-            onChange={handleFileChange}
-            value={formData.profilePic}
           />
 
           <textarea
@@ -113,6 +112,14 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
             value={formData.location}
             onChange={handleChange}
           />
+          <input
+            type="text"
+            name="phone"
+            className="input"
+            placeholder="Phone"
+            value={formData.phone}
+            onChange={handleChange}
+          />
 
           <input
             type="text"
@@ -121,6 +128,11 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
             placeholder="Tags (comma-separated) e.g. Fashion, Travel"
             value={formData.tags}
             onChange={handleChange}
+          />
+          <FileUpload
+            label="Upload Profile Pic"
+            onChange={handleFileChange}
+            value={formData.profilePic}
           />
         </div>
 
