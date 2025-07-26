@@ -20,7 +20,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
         profilePic: user.profilePic || "",
         bio: user.bio || "",
         location: user.location || "",
-        tags: user.tags?.join(", ") || "",
+        tags: user.tags?.join(", ") || "", // convert array to comma-separated string
       });
     }
   }, [user]);
@@ -33,31 +33,39 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
     }));
   };
 
- const handleFileChange = (file) => {
-  setFormData((prev) => ({
-    ...prev,
-    profilePic: file,
-  }));
-};
+  const handleFileChange = (file) => {
+    setFormData((prev) => ({
+      ...prev,
+      profilePic: file,
+    }));
+  };
 
   const handleSubmit = async () => {
-  setLoading(true);
+    setLoading(true);
 
-  const formDataToSend = new FormData();
-  formDataToSend.append("name", formData.name);
-  formDataToSend.append("bio", formData.bio);
-  formDataToSend.append("location", formData.location);
-  formDataToSend.append("tags", formData.tags);
-  if (formData.profilePic instanceof File) {
-    formDataToSend.append("profilePic", formData.profilePic);
-  }
+    const formDataToSend = new FormData();
+    formDataToSend.append("name", formData.name);
+    formDataToSend.append("bio", formData.bio);
+    formDataToSend.append("location", formData.location);
 
-  try {
-    await onSave(formDataToSend);
-  } finally {
-    setLoading(false);
-  }
-};
+    // Convert tags string to array
+    const tagsArray = formData.tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag);
+    tagsArray.forEach((tag) => formDataToSend.append("tags[]", tag)); // send as tags[]
+
+    if (formData.profilePic instanceof File) {
+      formDataToSend.append("profilePic", formData.profilePic);
+    }
+
+    try {
+      await onSave(formDataToSend);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
@@ -110,7 +118,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
             type="text"
             name="tags"
             className="input"
-            placeholder="Tags (comma-separated) e.g. Fashion"
+            placeholder="Tags (comma-separated) e.g. Fashion, Travel"
             value={formData.tags}
             onChange={handleChange}
           />

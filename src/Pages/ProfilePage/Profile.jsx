@@ -7,7 +7,8 @@ import Layout from "../../Components/Layout/Layout";
 import api from "../../api/axios";
 import { toast } from "react-hot-toast";
 import { MdEdit } from "react-icons/md";
-import ProfileEditModal from "../../Components/Modals/ProfileEditModel"; // adjust path if needed
+import ProfileEditModal from "../../Components/Modals/ProfileEditModel";
+import AddProductModel from "../../Components/Modals/AddProductModel"; // Import the AddProductModel
 
 const Posts = () => <div className="p-4">Posts Section</div>;
 const Reels = () => <div className="p-4">Reels Section</div>;
@@ -18,7 +19,9 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
+  const [addProductOpen, setAddProductOpen] = useState(false); // state for Add Product modal
 
+  // Fetch profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -31,24 +34,30 @@ const Profile = () => {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, []);
-  const handleProfileUpdate = async (formDataToSend) => {
-  try {
-    const res = await api.patch("/user/profile", formDataToSend, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    toast.success("Profile updated successfully");
-    setUser(res.data);
-  } catch (err) {
-    toast.error("Update failed");
-    console.error(err);
-  }
-};
 
+  // Update profile
+  const handleProfileUpdate = async (formData) => {
+    try {
+      const res = await api.patch("/user/profile", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      toast.success(res.data.msg || "Profile updated successfully");
+      setUser(res.data.user);
+      setEditOpen(false);
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "Update failed");
+      console.error("Update error:", err);
+    }
+  };
+
+  // Handle product added
+  const handleProductCreated = (product) => {
+    toast.success(`Product "${product.title}" added!`);
+    setAddProductOpen(false);
+    // Optionally refresh products tab here if needed
+  };
 
   if (loading) {
     return (
@@ -99,14 +108,16 @@ const Profile = () => {
                   <MdEdit size={20} />
                 </button>
               </div>
-              <p className="text-gray-500 text-md">
-                {user.bio || "No bio yet"}
-              </p>
+              <p className="text-gray-500 text-md">{user.bio || "No bio yet"}</p>
             </div>
           </div>
 
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm">
-            Follow
+          {/* Add Product Button */}
+          <button
+            onClick={() => setAddProductOpen(true)}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm"
+          >
+            Add Product
           </button>
         </div>
 
@@ -118,7 +129,7 @@ const Profile = () => {
           </p>
           <p className="flex gap-2 items-center">
             <FaPhone />
-           {user.phone || "NA"}
+            {user.phone || "NA"}
           </p>
           <p className="flex gap-2 items-center">
             <CiLocationOn />
@@ -128,7 +139,7 @@ const Profile = () => {
 
         {/* Tags */}
         <div className="mt-6 flex flex-wrap gap-2">
-          {user.tags.length > 0 ? (
+          {user.tags?.length > 0 ? (
             user.tags.map((tag, index) => (
               <span
                 key={index}
@@ -169,11 +180,21 @@ const Profile = () => {
           {activeTab === "reels" && <Reels />}
         </div>
       </div>
+
+      {/* Edit Modal */}
       {editOpen && (
         <ProfileEditModal
           user={user}
           onClose={() => setEditOpen(false)}
           onSave={handleProfileUpdate}
+        />
+      )}
+
+      {/* Add Product Modal */}
+      {addProductOpen && (
+        <AddProductModel
+          onClose={() => setAddProductOpen(false)}
+          onProductCreated={handleProductCreated}
         />
       )}
     </Layout>

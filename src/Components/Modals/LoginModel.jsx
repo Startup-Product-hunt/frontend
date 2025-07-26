@@ -1,24 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import Loading from "../Atoms/Loading";
+import { useNavigate } from "react-router-dom";
 
-const LoginModal = ({ onSuccess }) => {
-  const [view, setView] = useState("login");
+const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
+  const [view, setView] = useState(defaultView);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [otp, setOtp] = useState("");
-  const [resetToken, setResetToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    if (resetToken) {
+      setView("reset"); 
+    }
+  }, [resetToken]);
+
   const resetFields = () => {
     setEmail("");
     setPassword("");
     setName("");
-    setOtp("");
-    setResetToken("");
     setNewPassword("");
   };
 
@@ -27,10 +33,8 @@ const LoginModal = ({ onSuccess }) => {
     try {
       const res = await api.post(`/auth/register`, { name, email, password });
       toast.success("Registered successfully");
-      console.log("Registered " + res.data.name);
       setView("login");
     } catch (err) {
-      console.log(err.response?.data?.message || "Registration failed");
       toast.error(err.response?.data?.message || "Registration failed");
     } finally {
       resetFields();
@@ -43,72 +47,54 @@ const LoginModal = ({ onSuccess }) => {
     try {
       const res = await api.post(`/auth/login`, { email, password });
 
-      // Extracting user data from response
       const userData = {
         _id: res.data._id,
         name: res.data.name,
         email: res.data.email,
         role: res.data.role,
       };
-
-      // Store in localStorage as string
       localStorage.setItem("user", JSON.stringify(userData));
 
       toast.success("Welcome back " + res.data.name);
       onSuccess?.(userData);
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
-      console.log(err.response?.data?.message || "Login failed");
     } finally {
       resetFields();
       setLoading(false);
+      setTimeout(() => {
+        navigate('/profile')
+      }, 10);
     }
   };
 
-  const handleSendOtp = async () => {
+  // Forgot Password with Reset Link
+  const handleSendResetLink = async () => {
     setLoading(true);
     try {
       await api.post(`/auth/forgot-password`, { email });
-      toast.success("OTP sent");
-      setView("verifyOtp");
+      toast.success("Reset link sent to your email");
+      setView("login");
     } catch (err) {
-      toast.error("Failed to send OTP");
-      console.log(err.response?.data?.message || "Failed to send OTP");
+      toast.error(err.response?.data?.message || "Failed to send reset link");
     } finally {
       resetFields();
       setLoading(false);
     }
   };
 
-  const handleVerifyOtp = async () => {
-    setLoading(true);
-    try {
-      const res = await api.post(`/auth/verify-otp`, { email, otp });
-      toast.success("OTP verified");
-      setResetToken(res.data.resetToken);
-      setView("reset");
-    } catch (err) {
-      toast.error("OTP verification failed");
-      console.log(err.response?.data?.message || "OTP verification failed");
-    } finally {
-      resetFields();
-      setLoading(false);
-    }
-  };
-
+  // Reset Password
   const handleResetPassword = async () => {
     setLoading(true);
     try {
-      await api.post(`/auth/reset-password`, {
-        email,
-        resetToken,
-        newPassword,
+      await api.post(`/auth/reset-password/${resetToken}`, {
+        newPassword: newPassword,
       });
       toast.success("Password reset successful");
       setView("login");
     } catch (err) {
-      toast.error("Password reset failed");
-      console.log(err.response?.data?.message || "Password reset failed");
+      toast.error(err.response?.data?.message || "Password reset failed");
+      console.log("error: " ,err)
     } finally {
       resetFields();
       setLoading(false);
@@ -187,7 +173,7 @@ const LoginModal = ({ onSuccess }) => {
   const renderForgot = () => (
     <>
       <p className="text-lg font-medium mb-3 text-center">
-        Enter your email to get an OTP
+        Enter your email to receive a reset link
       </p>
       <input
         type="email"
@@ -199,11 +185,10 @@ const LoginModal = ({ onSuccess }) => {
 
       <button
         className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 mb-3"
-        onClick={handleSendOtp}
+        onClick={handleSendResetLink}
         disabled={loading}
       >
-        {" "}
-        {loading ? <Loading /> : "Send OTP"}
+        {loading ? <Loading /> : "Send Reset Link"}
       </button>
 
       <div className="text-center text-sm">
@@ -211,29 +196,6 @@ const LoginModal = ({ onSuccess }) => {
           Back to Login
         </button>
       </div>
-    </>
-  );
-
-  const renderVerifyOtp = () => (
-    <>
-      <p className="text-lg font-medium mb-3 text-center">
-        Enter OTP sent to {email}
-      </p>
-      <input
-        type="text"
-        placeholder="Enter OTP"
-        className="input mb-4"
-        value={otp}
-        onChange={(e) => setOtp(e.target.value)}
-      />
-
-      <button
-        className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 mb-3"
-        onClick={handleVerifyOtp}
-        disabled={loading}
-      >
-        {loading ? <Loading /> : " Verify OTP"}
-      </button>
     </>
   );
 
@@ -249,14 +211,12 @@ const LoginModal = ({ onSuccess }) => {
         value={newPassword}
         onChange={(e) => setNewPassword(e.target.value)}
       />
-
       <button
         className="w-full bg-blue-700 text-white py-2 rounded hover:bg-blue-800 mb-3"
         onClick={handleResetPassword}
         disabled={loading}
       >
-        {" "}
-        {loading ? <Loading /> : " Set New Password"}
+        {loading ? <Loading /> : "Set New Password"}
       </button>
     </>
   );
@@ -266,7 +226,6 @@ const LoginModal = ({ onSuccess }) => {
       {view === "login" && renderLogin()}
       {view === "signup" && renderSignup()}
       {view === "forgot" && renderForgot()}
-      {view === "verifyOtp" && renderVerifyOtp()}
       {view === "reset" && renderReset()}
 
       {(view === "login" || view === "signup") && (
