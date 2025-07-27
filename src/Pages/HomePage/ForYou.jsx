@@ -60,7 +60,7 @@ const ForYou = () => {
 
       {/* Search Section */}
       <div className="flex flex-col items-center ">
-        <p className="text-xl font-bold text-white mb-3 text-center">
+        <p className="text-xl f text-gray-300 mb-3 text-center">
            Search for products you love
         </p>
         <div className="relative w-full max-w-md">

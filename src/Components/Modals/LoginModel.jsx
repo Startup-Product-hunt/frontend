@@ -68,7 +68,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       resetFields();
       setLoading(false);
       setTimeout(() => {
-        navigate('/profile')
+        navigate('/')
       }, 10);
     }
   };
