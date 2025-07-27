@@ -1,7 +1,6 @@
-import React from 'react';
 import { CiLocationOn } from "react-icons/ci";
 
-const UserCard = ({ profileImage, name, bio, location, tags, link }) => {
+const UserCard = ({ profileImage, name, bio, location, tags, email }) => {
   return (
     <div className="border border-gray-300 rounded-lg p-4  max-w-md">
       {/* Profile image and name */}
@@ -11,14 +10,19 @@ const UserCard = ({ profileImage, name, bio, location, tags, link }) => {
           alt={name}
           className="w-12 h-12 rounded-full object-cover"
         />
-        <p className="text-xl font-semibold">{name}</p>
+        <div>
+          <p className="text-xl font-semibold">{name}</p>
+          <p className="text-sm text-gray-400 break-all">{email}</p>
+        </div>
       </div>
 
       {/* Bio */}
       <p className="text-gray-700 mb-2">{bio}</p>
 
       {/* Location */}
-      <p className="text-sm text-gray-500 mb-2 flex gap-1 items-center"><CiLocationOn className='text-lg'/> {location}</p>
+      <p className="text-sm text-gray-500 mb-2 flex gap-1 items-center">
+        <CiLocationOn className="text-lg" /> {location}
+      </p>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-3">

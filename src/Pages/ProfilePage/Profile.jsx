@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
 import { FaPhone, FaTimes } from "react-icons/fa";
 import { CiLocationOn } from "react-icons/ci";
@@ -8,9 +8,9 @@ import api from "../../api/axios";
 import { toast } from "react-hot-toast";
 import { MdEdit } from "react-icons/md";
 import ProfileEditModal from "../../Components/Modals/ProfileEditModel";
-import AddProductModel from "../../Components/Modals/AddProductModel"; // Import the AddProductModel
+import AddProductModel from "../../Components/Modals/AddProductModel";
+import MyTickets from "./MyTickets";
 
-const Posts = () => <div className="p-4">Posts Section</div>;
 const Reels = () => <div className="p-4">Reels Section</div>;
 
 const Profile = () => {
@@ -19,9 +19,8 @@ const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editOpen, setEditOpen] = useState(false);
-  const [addProductOpen, setAddProductOpen] = useState(false); // state for Add Product modal
+  const [addProductOpen, setAddProductOpen] = useState(false);
 
-  // Fetch profile data
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -56,7 +55,6 @@ const Profile = () => {
   const handleProductCreated = (product) => {
     toast.success(`Product "${product.title}" added!`);
     setAddProductOpen(false);
-    // Optionally refresh products tab here if needed
   };
 
   if (loading) {
@@ -72,7 +70,6 @@ const Profile = () => {
   return (
     <Layout>
       <div className="bg-gray-50 px-8 md:px-32 py-12">
-        {/* Top Section */}
         <div className="flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <img
@@ -108,11 +105,12 @@ const Profile = () => {
                   <MdEdit size={20} />
                 </button>
               </div>
-              <p className="text-gray-500 text-md">{user.bio || "No bio yet"}</p>
+              <p className="text-gray-500 text-md">
+                {user.bio || "No bio yet"}
+              </p>
             </div>
           </div>
 
-          {/* Add Product Button */}
           <button
             onClick={() => setAddProductOpen(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition text-sm"
@@ -121,7 +119,6 @@ const Profile = () => {
           </button>
         </div>
 
-        {/* Contact Info */}
         <div className="mt-6 space-y-1 text-sm text-gray-600">
           <p className="flex gap-2 items-center">
             <MdOutlineMail />
@@ -137,7 +134,6 @@ const Profile = () => {
           </p>
         </div>
 
-        {/* Tags */}
         <div className="mt-6 flex flex-wrap gap-2">
           {user.tags?.length > 0 ? (
             user.tags.map((tag, index) => (
@@ -153,12 +149,10 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Horizontal Line */}
         <hr className="mt-8 border-gray-300" />
 
-        {/* Tabs */}
         <div className="flex gap-6 mt-4 text-gray-600 font-medium border-b border-gray-300">
-          {["products", "posts", "reels"].map((tab) => (
+          {["products", "My Tickets", "reels"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -173,10 +167,9 @@ const Profile = () => {
           ))}
         </div>
 
-        {/* Tab Content */}
         <div className="mt-10">
           {activeTab === "products" && <Products />}
-          {activeTab === "posts" && <Posts />}
+          {activeTab === "My Tickets" && <MyTickets />}
           {activeTab === "reels" && <Reels />}
         </div>
       </div>

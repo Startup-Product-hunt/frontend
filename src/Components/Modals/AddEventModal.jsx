@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import api from "../../api/axios";
 import { toast } from "react-hot-toast";
 import Loading from "../Atoms/Loading";
@@ -18,18 +18,24 @@ const AddEventModal = ({ onClose, onSuccess }) => {
   };
 
   const handleSave = async () => {
+   
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user?._id) {
       toast.error("User not found. Please login again.");
       return;
     }
 
-    if (!eventData.title || !eventData.description || !eventData.location || !eventData.dateTime) {
+    if (
+      !eventData.title ||
+      !eventData.description ||
+      !eventData.location ||
+      !eventData.dateTime
+    ) {
       toast.error("Please fill in all fields.");
       return;
     }
+     setLoading(true);
 
-    setLoading(true);
     try {
       await api.post("/admin/events/create", {
         ...eventData,
@@ -63,6 +69,7 @@ const AddEventModal = ({ onClose, onSuccess }) => {
             value={eventData.title}
             onChange={handleChange}
             className="input"
+            required
             placeholder="Enter event name"
           />
         </div>
@@ -77,6 +84,7 @@ const AddEventModal = ({ onClose, onSuccess }) => {
             value={eventData.description}
             onChange={handleChange}
             className="input"
+            required
             placeholder="Enter event description"
           />
         </div>
@@ -92,6 +100,7 @@ const AddEventModal = ({ onClose, onSuccess }) => {
             value={eventData.location}
             onChange={handleChange}
             className="input"
+            required
             placeholder="Enter event location"
           />
         </div>
@@ -106,6 +115,7 @@ const AddEventModal = ({ onClose, onSuccess }) => {
             name="dateTime"
             value={eventData.dateTime}
             onChange={handleChange}
+            required
             className="input"
           />
         </div>
@@ -124,7 +134,7 @@ const AddEventModal = ({ onClose, onSuccess }) => {
             className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
             disabled={loading}
           >
-            {loading ? <Loading/> : "Add Event"}
+            {loading ? <Loading /> : "Add Event"}
           </button>
         </div>
       </div>

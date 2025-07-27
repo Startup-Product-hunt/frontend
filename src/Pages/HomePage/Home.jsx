@@ -1,4 +1,3 @@
-import React from "react";
 import { GrAnnounce } from "react-icons/gr";
 import { MdOutlineEventAvailable, MdMeetingRoom } from "react-icons/md";
 import { BiBell } from "react-icons/bi";
@@ -14,15 +13,11 @@ const Home = () => {
   return (
     <Layout>
       <div className="bg-blue-950 text-white px-4 md:px-32 py-8 md:py-12">
-        {/* Header */}
         <div className="text-2xl md:text-4xl font-bold flex flex-col md:flex-row justify-between gap-2 md:gap-0">
-         
-            Welcome, Katie
-        
+          Welcome, Katie
           <GrAnnounce className="text-2xl md:text-3xl" />
         </div>
 
-        {/* Nav Links */}
         <ul className="flex flex-wrap md:flex-nowrap gap-3 md:gap-6 mt-8 overflow-x-auto">
           <li>
             <Link
@@ -80,7 +75,6 @@ const Home = () => {
           </li>
         </ul>
 
-        {/* Sections */}
         <div className="mt-10">
           <ForYou />
           <PaidTask />

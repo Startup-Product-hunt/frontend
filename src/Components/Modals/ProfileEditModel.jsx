@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import FileUpload from "../Atoms/FileUpload";
 import Loading from "../Atoms/Loading";
 
@@ -22,7 +22,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
         bio: user.bio || "",
         phone: user.phone || "",
         location: user.location || "",
-        tags: user.tags?.join(", ") || "", // convert array to comma-separated string
+        tags: user.tags?.join(", ") || "", 
       });
     }
   }, [user]);
@@ -72,7 +72,7 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-6 relative">
-        {/* Close button */}
+      
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-gray-500 hover:text-gray-700 text-xl font-bold"
@@ -84,7 +84,6 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
           Edit Profile
         </h2>
 
-        {/* Form Fields */}
         <div className="space-y-4">
           <input
             type="text"
@@ -136,7 +135,6 @@ const ProfileEditModal = ({ user, onClose, onSave }) => {
           />
         </div>
 
-        {/* Actions */}
         <div className="mt-6 flex justify-end gap-2">
           <button
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"

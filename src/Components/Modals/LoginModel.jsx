@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
@@ -43,6 +43,11 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
   };
 
   const handleLogin = async () => {
+
+    if(!email || !password){
+      toast.error("Email and password is required!")
+      return
+    }
     setLoading(true);
     try {
       const res = await api.post(`/auth/login`, { email, password });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import FileUpload from "../Atoms/FileUpload";
 import Loading from "../Atoms/Loading";
 import api from "../../api/axios";
@@ -43,7 +43,7 @@ const AddProductModel = ({ onClose, onProductCreated }) => {
 
       toast.success("Product created successfully!");
       onProductCreated?.(res.data); // Pass the new product to parent
-      onClose(); // Close modal
+      onClose(); 
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to create product");
       console.error("Product create error:", err);
@@ -113,7 +113,6 @@ const AddProductModel = ({ onClose, onProductCreated }) => {
             onChange={handleFileChange}
           />
 
-          {/* Actions */}
           <div className="mt-6 flex justify-end gap-2">
             <button
               type="button"

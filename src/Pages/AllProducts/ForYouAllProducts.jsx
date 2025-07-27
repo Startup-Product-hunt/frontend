@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { IoIosArrowForward } from "react-icons/io";
+import  { useEffect, useState } from "react";
+
 import ForYouCard from "../../Components/Cards/ForYouCard";
 import api from "../../api/axios";
 import Layout from "../../Components/Layout/Layout";
 
 const ForYouAllProducts = () => {
-  const navigate = useNavigate();
+  
   const [products, setProducts] = useState([]);
 
   // Fetch products

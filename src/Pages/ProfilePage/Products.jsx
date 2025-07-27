@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import api from "../../api/axios";
 import ProductCard from "../../Components/Cards/ProductCard";
 import ProductDetailModal from "../../Components/Modals/ProductDetailModal";
@@ -9,9 +9,9 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [editProduct, setEditProduct] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true); 
 
-  // Fetch products
+ 
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -29,20 +29,19 @@ const Products = () => {
     fetchProducts();
   }, []);
 
-  // Handle Delete Product
   const handleDeleteProduct = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
       await api.delete(`/user/product/${id}`);
       toast.success("Product deleted successfully");
-      fetchProducts(); // Refresh product list
+      fetchProducts();
     } catch (err) {
       console.error("Error deleting product", err);
       toast.error("Failed to delete product");
     }
   };
 
-  // Handle Edit Product Save
+
   const handleProductUpdate = async (formData) => {
     try {
       await api.put(`/user/product/${editProduct._id}`, formData, {
@@ -50,7 +49,7 @@ const Products = () => {
       });
       toast.success("Product updated successfully");
       setEditProduct(null);
-      fetchProducts(); // Refresh product list
+      fetchProducts();
     } catch (err) {
       console.error("Error updating product", err);
       toast.error("Failed to update product");
@@ -59,13 +58,14 @@ const Products = () => {
 
   return (
     <>
+    <h1 className="text-3xl font-bold text-gray-800 mb-6">My Products</h1>
       {/* Loading Spinner */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
           <div className="w-10 h-10 border-4 border-gray-300 border-t-indigo-600 rounded-full animate-spin"></div>
         </div>
       ) : products.length === 0 ? (
-        // No Products Message
+        
         <div className="flex justify-center items-center h-64 text-gray-500 text-lg">
           No products added
         </div>

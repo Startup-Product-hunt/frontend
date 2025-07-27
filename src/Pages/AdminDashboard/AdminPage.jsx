@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import Layout from "../../Components/Layout/Layout";
 import { FaUsers, FaTicketAlt, FaClipboardList, FaCalendarPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +11,7 @@ const AdminPage = () => {
   const options = [
     {
       title: "View Users",
-      description: "Manage and view all registered users.",
+      description: "View all registered users.",
       icon: <FaUsers size={50} className="text-indigo-500" />,
       onClick: () => navigate("/admin/users"),
     },
@@ -22,10 +22,10 @@ const AdminPage = () => {
       onClick: () => navigate("/admin/tickets"),
     },
     {
-      title: "View Created Tickets",
-      description: "Monitor tickets created by admin.",
+      title: "View All Events",
+      description: "Monitor all events created by you.",
       icon: <FaClipboardList size={50} className="text-yellow-500" />,
-      onClick: () => navigate("/admin/created-tickets"),
+      onClick: () => navigate("/events"),
     },
     {
       title: "Add Event",
@@ -59,13 +59,11 @@ const AdminPage = () => {
         </div>
       </div>
 
-      {/* Add Event Modal */}
       {showAddEventModal && (
         <AddEventModal
           onClose={() => setShowAddEventModal(false)}
           onSuccess={() => {
             setShowAddEventModal(false);
-            console.log("Event added successfully");
           }}
         />
       )}

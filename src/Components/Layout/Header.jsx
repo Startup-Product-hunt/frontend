@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import LoginModal from "../Modals/LoginModel";
@@ -24,7 +24,7 @@ const Header = () => {
     }
   }, []);
 
-  // Open modal automatically if token is present in URL
+  // Open modal automatically if token is present in URL for reset password
   useEffect(() => {
     if (token) {
       setShowLogin(true);
@@ -75,9 +75,7 @@ const Header = () => {
             <Link to="/about" className="hover:text-indigo-500 transition">
               About
             </Link>
-            <Link to="/business" className="hover:text-indigo-500 transition">
-              Business
-            </Link>
+           
 
             {user ? (
               <div className="relative" ref={dropdownRef}>

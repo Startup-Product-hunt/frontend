@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa";
 import FileUpload from "../Atoms/FileUpload";
 import Loading from "../Atoms/Loading";
@@ -69,18 +69,16 @@ const ProductEditModel = ({ product, onClose, onSave }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-center items-center px-4">
       <div className="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 relative">
-        {/* Close Button */}
+       
         <button
           onClick={onClose}
           className="absolute top-3 right-4 text-gray-500 hover:text-red-600 text-xl font-bold"
         >
           <FaTimes />
         </button>
-
-        {/* Modal Title */}
         <h2 className="text-2xl font-semibold mb-4 text-center">Edit Product</h2>
 
-        {/* Form Fields */}
+      
         <div className="space-y-4">
           <input
             type="text"
@@ -125,7 +123,6 @@ const ProductEditModel = ({ product, onClose, onSave }) => {
           />
         </div>
 
-        {/* Action Buttons */}
         <div className="mt-6 flex justify-end gap-2">
           <button
             className="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300"
