@@ -22,7 +22,7 @@ const ForYouCard = ({
         </span>
 
         <span className="absolute bottom-2 right-2 bg-green-600 text-white text-xs px-2 py-1 rounded">
-          ${price}
+          Rs.{price}
         </span>
       </div>
 

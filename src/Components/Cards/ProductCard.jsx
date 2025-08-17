@@ -46,7 +46,7 @@ const ProductCard = ({
       {/* Product Info */}
       <div className="flex flex-col flex-1 px-4 py-3">
         <h3 className="text-lg font-semibold text-gray-800 truncate">{name}</h3>
-        <p className="text-gray-600 text-sm mt-1">$ {price}</p>
+        <p className="text-gray-600 text-sm mt-1">Rs. {price}</p>
       </div>
     </div>
   );
