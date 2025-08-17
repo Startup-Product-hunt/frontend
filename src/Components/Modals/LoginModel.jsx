@@ -3,10 +3,11 @@ import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import Loading from "../Atoms/Loading";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { FaCheckCircle } from "react-icons/fa";
 
-const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
+const LoginModal = ({ onSuccess, defaultView = "login", resetToken: propToken }) => {
+  const { token: urlToken } = useParams();
   const [view, setView] = useState(defaultView);
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -15,10 +16,10 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const resetToken = propToken || urlToken; 
+
   useEffect(() => {
-    if (resetToken) {
-      setView("reset");
-    }
+    if (resetToken) setView("reset");
   }, [resetToken]);
 
   const resetFields = () => {
@@ -34,7 +35,9 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       const res = await api.post(`/auth/register`, { name, email, password });
       toast.success("Registered successfully");
       setView("login");
-    } catch (err) {
+      navigate('/')
+      
+    } catch (err) { 
       toast.error(err.response?.data?.message || "Registration failed");
     } finally {
       resetFields();
@@ -57,23 +60,24 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
         email: res.data.email,
         role: res.data.role,
       };
+
+      // persist + notify parent (Header) so it can switch to user icon immediately
       localStorage.setItem("user", JSON.stringify(userData));
+      onSuccess?.(userData);
 
       toast.success("Welcome back " + res.data.name);
-      onSuccess?.(userData);
     } catch (err) {
       toast.error(err.response?.data?.message || "Login failed");
     } finally {
       resetFields();
       setLoading(false);
-      setTimeout(() => {
-        navigate("/");
-      }, 10);
+
+      setTimeout(() => { navigate("/"); }, 10);
     }
   };
 
   // Forgot Password with Reset Link
-  const handleSendResetLink = async () => {
+   const handleSendResetLink = async () => {
     setLoading(true);
     try {
       await api.post(`/auth/forgot-password`, { email });
@@ -85,7 +89,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       resetFields();
       setLoading(false);
     }
-  };
+  };  
 
   // Reset Password
   const handleResetPassword = async () => {
@@ -103,6 +107,15 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       resetFields();
       setLoading(false);
     }
+  };
+
+  // login || signup with google
+  const handleGoogleLogin = () => {
+    const backend = api?.defaults?.baseURL || import.meta.env.VITE_API_URL;
+    const redirectUrl = `${window.location.origin}/auth/callback`;
+    window.location.href = `${backend}/auth/google?redirect=${encodeURIComponent(
+      redirectUrl
+    )}`;
   };
 
   const renderLogin = () => (
@@ -234,7 +247,8 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       </p>
 
       <p className="text-center text-gray-600 mb-4">
-        A reset password link has been sent to your registered email.Please check your email.
+        A reset password link has been sent to your registered email.Please
+        check your email.
       </p>
     </div>
   );
@@ -258,6 +272,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
           <button
             type="button"
             className="w-full border border-gray-300 py-2 rounded flex items-center justify-center gap-2 hover:bg-gray-100 transition-all"
+            onClick={handleGoogleLogin}
           >
             <FcGoogle className="text-xl" />
             <span className="text-sm font-medium text-gray-700">

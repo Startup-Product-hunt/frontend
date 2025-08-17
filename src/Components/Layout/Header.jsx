@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes, FaUserCircle } from "react-icons/fa";
 import LoginModal from "../Modals/LoginModel";
 import api from "../../api/axios";
@@ -10,26 +10,84 @@ const Header = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef();
+  const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Get reset token from URL if present
-  const { token } = useParams();
-
-  // Check if user is logged in
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+  // utility: safe JSON parse
+  const safeParse = (str) => {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return null;
     }
+  };
+
+  // normalize name (fallback if backend returned "undefined" or empty)
+  const normalizeName = (nameFromUrl, email) => {
+    let name = nameFromUrl;
+    if (!name || name === "undefined") {
+      name = (email || "").split("@")[0] || "User";
+      name = name.replace(/[._]/g, " ");
+      name = name.charAt(0).toUpperCase() + name.slice(1);
+    } else {
+      try { name = decodeURIComponent(name); } catch {}
+    }
+    return name;
+  };
+
+  // Read auth from localStorage first; if none, try URL query params (Google redirect).
+  const readAuthFromStorageOrUrl = () => {
+    // 1) try storage
+    const raw = localStorage.getItem("user");
+    const stored = safeParse(raw);
+    if (stored && stored.email) return stored;
+
+    // 2) try URL params (only if storage missing)
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+    if (!email) return null;
+
+    const role = params.get("role") || "user";
+    const name = normalizeName(params.get("name"), email);
+
+    const userFromUrl = { name, email, role };
+    // persist it so next refresh will keep user
+    try { localStorage.setItem("user", JSON.stringify(userFromUrl)); } catch {}
+    // cleanup URL
+    try {
+      const url = new URL(window.location.href);
+      url.search = "";
+      window.history.replaceState({}, document.title, url.toString());
+    } catch (e) {}
+    return userFromUrl;
+  };
+
+  // On mount: initialize user from storage or URL
+  useEffect(() => {
+    const initial = readAuthFromStorageOrUrl();
+    setUser(initial);
   }, []);
 
-  // Open modal automatically if token is present in URL for reset password
+  // Keep in sync across tabs and within same tab when we dispatch an event
   useEffect(() => {
-    if (token) {
-      setShowLogin(true);
-    }
-  }, [token]);
+    const syncAuth = () => {
+      const u = readAuthFromStorageOrUrl();
+      setUser(u);
+    };
+
+    const storageHandler = (e) => {
+      // if storage changed for "user" key, sync
+      if (!e || e.key === "user") syncAuth();
+    };
+
+    window.addEventListener("storage", storageHandler); // other tabs
+    window.addEventListener("auth:changed", syncAuth); // same tab custom event
+
+    return () => {
+      window.removeEventListener("storage", storageHandler);
+      window.removeEventListener("auth:changed", syncAuth);
+    };
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -50,11 +108,12 @@ const Header = () => {
       await api.post("/auth/logout", {});
       localStorage.removeItem("user");
       setUser(null);
+      window.dispatchEvent(new Event("auth:changed"));
       toast.success("Logged out successfully");
       navigate("/");
     } catch (err) {
       toast.error("Logout failed");
-      console.log(err.response?.data?.message || "Logout failed");
+      console.log(err?.response?.data?.message || err?.message || "Logout failed");
     }
   };
 
@@ -63,19 +122,12 @@ const Header = () => {
       <Toaster />
       <header className="bg-white shadow-md fixed top-0 left-0 w-full z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
-          <Link to="/" className="text-2xl font-bold text-indigo-600">
-            kalvakhy
-          </Link>
+          <Link to="/" className="text-2xl font-bold text-indigo-600">kalvakhy</Link>
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex space-x-8 text-gray-700 font-medium items-center">
-            <Link to="/" className="hover:text-indigo-500 transition">
-              Home
-            </Link>
-            <Link to="/about" className="hover:text-indigo-500 transition">
-              About
-            </Link>
-           
+            <Link to="/" className="hover:text-indigo-500 transition">Home</Link>
+            <Link to="/about" className="hover:text-indigo-500 transition">About</Link>
 
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -84,7 +136,9 @@ const Header = () => {
                   className="flex items-center gap-2 text-gray-700 hover:text-indigo-500 transition"
                 >
                   <FaUserCircle size={22} />
+                  <span className="hidden sm:inline">{user.name}</span>
                 </button>
+
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 bg-white border rounded shadow-lg w-40">
                     <Link
@@ -95,7 +149,6 @@ const Header = () => {
                       Profile
                     </Link>
 
-                    {/* Show Admin Dashboard if role === admin */}
                     {user?.role === "admin" && (
                       <Link
                         to="/admin/dashboard"
@@ -137,66 +190,20 @@ const Header = () => {
         {menuOpen && (
           <div className="md:hidden bg-white shadow-md">
             <nav className="flex flex-col space-y-4 px-6 py-4 text-gray-700 font-medium">
-              <Link
-                to="/"
-                onClick={closeMenu}
-                className="hover:text-indigo-500"
-              >
-                Home
-              </Link>
-              <Link
-                to="/about"
-                onClick={closeMenu}
-                className="hover:text-indigo-500"
-              >
-                About
-              </Link>
-              <Link
-                to="/services"
-                onClick={closeMenu}
-                className="hover:text-indigo-500"
-              >
-                Service
-              </Link>
+              <Link to="/" onClick={closeMenu} className="hover:text-indigo-500">Home</Link>
+              <Link to="/about" onClick={closeMenu} className="hover:text-indigo-500">About</Link>
+              <Link to="/services" onClick={closeMenu} className="hover:text-indigo-500">Service</Link>
+
               {user ? (
                 <>
-                  <Link
-                    to="/profile"
-                    onClick={closeMenu}
-                    className="hover:text-indigo-500"
-                  >
-                    Profile
-                  </Link>
+                  <Link to="/profile" onClick={closeMenu} className="hover:text-indigo-500">Profile</Link>
                   {user?.role === "admin" && (
-                    <Link
-                      to="/admin/dashboard"
-                      onClick={closeMenu}
-                      className="hover:text-indigo-500"
-                    >
-                      Admin Dashboard
-                    </Link>
+                    <Link to="/admin/dashboard" onClick={closeMenu} className="hover:text-indigo-500">Admin Dashboard</Link>
                   )}
-
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      closeMenu();
-                    }}
-                    className="text-left hover:text-indigo-500"
-                  >
-                    Logout
-                  </button>
+                  <button onClick={() => { handleLogout(); closeMenu(); }} className="text-left hover:text-indigo-500">Logout</button>
                 </>
               ) : (
-                <button
-                  onClick={() => {
-                    setShowLogin(true);
-                    closeMenu();
-                  }}
-                  className="text-left hover:text-indigo-500"
-                >
-                  Login
-                </button>
+                <button onClick={() => { setShowLogin(true); closeMenu(); }} className="text-left hover:text-indigo-500">Login</button>
               )}
             </nav>
           </div>
@@ -212,12 +219,14 @@ const Header = () => {
               >
                 <FaTimes size={20} />
               </button>
+
               <LoginModal
-                defaultView={token ? "reset" : "login"}
-                resetToken={token || ""}
-                onSuccess={(user) => {
-                  setUser(user);
+                defaultView="login"
+                onSuccess={(u) => {
+                  try { localStorage.setItem("user", JSON.stringify(u)); } catch {}
+                  setUser(u);
                   setShowLogin(false);
+                  window.dispatchEvent(new Event("auth:changed"));
                 }}
               />
             </div>

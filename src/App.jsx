@@ -9,6 +9,9 @@ import ForYouAllProducts from "./Pages/AllProducts/ForYouAllProducts";
 import AdminPage from "./Pages/AdminDashboard/AdminPage";
 import AllUser from "./Pages/AdminDashboard/AllUser";
 import AllCreatedTickets from "./Pages/AdminDashboard/AllCreatedTickets";
+import GoogleCallback from "./Pages/GoogleCallback";
+import ResetPasswordPage from "./Pages/ProfilePage/ResetPasswordPage";
+
 //testing
 function App() {
   return (
@@ -16,14 +19,13 @@ function App() {
       <Routes>
         {/* general */}
         <Route path="/" element={<Home />} />
-
+        <Route path="/auth/callback" element={<GoogleCallback />} />
+    
         {/* User */}
         <Route path="/profile" element={<Profile />} />
-        <Route
-          path="/profile/:token"
-          element={<Header showResetModal={true} />}
-        />
+        <Route path="/profile/:token" element={<ResetPasswordPage />} />
 
+       
         {/* admin */}
         <Route path="/admin/dashboard" element={<AdminPage />} />
         <Route path="/admin/users" element={<AllUser />} />
