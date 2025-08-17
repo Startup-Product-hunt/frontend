@@ -13,12 +13,15 @@ const Home = () => {
   return (
     <Layout>
       <div className="bg-blue-950 text-white px-4 md:px-32 py-8 md:py-12">
-        <div className="text-2xl md:text-4xl font-bold flex flex-col md:flex-row justify-between gap-2 md:gap-0">
-          Welcome to ProductHunt
-          <GrAnnounce className="text-2xl md:text-3xl" />
+        <div className="flex items-center justify-between w-full">
+          <h1 className="text-2xl md:text-4xl font-bold text-center flex-1">
+            Welcome to ProductHunt
+          </h1>
+          <Link to='/events'> <GrAnnounce className="text-2xl md:text-3xl" /></Link>
+          
         </div>
 
-        <ul className="flex flex-wrap md:flex-nowrap gap-3 md:gap-6 mt-8 overflow-x-auto">
+        {/* <ul className="flex flex-wrap md:flex-nowrap gap-3 md:gap-6 mt-8 overflow-x-auto">
           <li>
             <Link
               to="/events"
@@ -73,9 +76,9 @@ const Home = () => {
               Tasks
             </Link>
           </li>
-        </ul>
+        </ul> */}
 
-        <div className="mt-10">
+        <div className="mt-5">
           <ForYou />
           {/* <PaidTask /> */}
         </div>

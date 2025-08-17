@@ -23,8 +23,8 @@ function App() {
           path="/profile/:token"
           element={<Header showResetModal={true} />}
         />
-        {/* admin */}
 
+        {/* admin */}
         <Route path="/admin/dashboard" element={<AdminPage />} />
         <Route path="/admin/users" element={<AllUser />} />
         <Route path="/admin/tickets" element={<AllCreatedTickets />} />

@@ -1,9 +1,10 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 import Loading from "../Atoms/Loading";
 import { useNavigate } from "react-router-dom";
+import { FaCheckCircle } from "react-icons/fa";
 
 const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
   const [view, setView] = useState(defaultView);
@@ -14,10 +15,9 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (resetToken) {
-      setView("reset"); 
+      setView("reset");
     }
   }, [resetToken]);
 
@@ -43,10 +43,9 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
   };
 
   const handleLogin = async () => {
-
-    if(!email || !password){
-      toast.error("Email and password is required!")
-      return
+    if (!email || !password) {
+      toast.error("Email and password is required!");
+      return;
     }
     setLoading(true);
     try {
@@ -68,7 +67,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       resetFields();
       setLoading(false);
       setTimeout(() => {
-        navigate('/profile')
+        navigate("/");
       }, 10);
     }
   };
@@ -79,7 +78,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
     try {
       await api.post(`/auth/forgot-password`, { email });
       toast.success("Reset link sent to your email");
-      setView("login");
+      setView("success");
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to send reset link");
     } finally {
@@ -99,7 +98,7 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
       setView("login");
     } catch (err) {
       toast.error(err.response?.data?.message || "Password reset failed");
-      console.log("error: " ,err)
+      console.log("error: ", err);
     } finally {
       resetFields();
       setLoading(false);
@@ -226,12 +225,27 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken = "" }) => {
     </>
   );
 
+  const renderSuccessOnSendLink = () => (
+    <div className="flex flex-col items-center justify-center p-6  w-full max-w-md mx-auto">
+      <FaCheckCircle className="text-green-500 text-6xl mb-4" />
+
+      <p className="text-2xl font-bold mb-2 text-center text-gray-800">
+        Link Sended
+      </p>
+
+      <p className="text-center text-gray-600 mb-4">
+        A reset password link has been sent to your registered email.Please check your email.
+      </p>
+    </div>
+  );
+
   return (
     <div className="w-full max-w-sm bg-white p-6 rounded-xl shadow-lg mx-auto mt-10">
       {view === "login" && renderLogin()}
       {view === "signup" && renderSignup()}
       {view === "forgot" && renderForgot()}
       {view === "reset" && renderReset()}
+      {view === "success" && renderSuccessOnSendLink()}
 
       {(view === "login" || view === "signup") && (
         <>
