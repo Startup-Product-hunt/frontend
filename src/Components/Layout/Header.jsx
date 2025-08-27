@@ -128,6 +128,7 @@ const Header = () => {
           <nav className="hidden md:flex space-x-8 text-gray-700 font-medium items-center">
             <Link to="/" className="hover:text-indigo-500 transition">Home</Link>
             <Link to="/about" className="hover:text-indigo-500 transition">About</Link>
+            <Link to="/events" className="hover:text-indigo-500 transition">Events</Link>
 
             {user ? (
               <div className="relative" ref={dropdownRef}>
@@ -192,7 +193,8 @@ const Header = () => {
             <nav className="flex flex-col space-y-4 px-6 py-4 text-gray-700 font-medium">
               <Link to="/" onClick={closeMenu} className="hover:text-indigo-500">Home</Link>
               <Link to="/about" onClick={closeMenu} className="hover:text-indigo-500">About</Link>
-              <Link to="/services" onClick={closeMenu} className="hover:text-indigo-500">Service</Link>
+              <Link to="/events" className="hover:text-indigo-500 transition">Events</Link>
+             
 
               {user ? (
                 <>

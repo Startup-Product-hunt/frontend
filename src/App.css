@@ -1,5 +1,7 @@
 @import "tailwindcss";
-
+*{
+  font-family: "ADLaM Display";
+}
 /* buttons */
 .button {
   padding: 2px 16px;

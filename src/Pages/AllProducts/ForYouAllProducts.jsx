@@ -47,7 +47,7 @@ const ForYouAllProducts = () => {
 
   return (
     <Layout>
-      <div className="bg-blue-950 text-white px-4 md:px-32 py-8 md:py-12 min-h-[100vh]">
+      <div className="bg-blue-50 text-blue-950 px-4 md:px-32 py-8 md:py-12 min-h-[100vh]">
         <p className="text-center text-4xl font-bold mb-6">All Products</p>
 
         {/* Search Bar */}
@@ -59,7 +59,7 @@ const ForYouAllProducts = () => {
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full border border-gray-300 rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-300"
+              className="w-full border border-gray-300 rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-300 text-gray-600"
             />
           </div>
         </div>

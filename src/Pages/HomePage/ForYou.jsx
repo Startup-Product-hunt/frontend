@@ -13,42 +13,44 @@ const ForYou = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await api.get("/general/products");
-        const latestProducts = res.data
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 4);
+ useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get("/general/products");
+      const allProducts = res.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
 
-        setProducts(latestProducts);
-        setFilteredProducts(latestProducts);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  // Filter products based on search
-  useEffect(() => {
-    if (!search.trim()) {
-      setFilteredProducts(products);
-    } else {
-      const searchLower = search.toLowerCase();
-      const filtered = products
-        .filter(
-          (product) =>
-            product.title.toLowerCase().includes(searchLower) ||
-            product.category.toLowerCase().includes(searchLower)
-        )
-        .slice(0, 4);
-      setFilteredProducts(filtered);
+      setProducts(allProducts); // ✅ keep all
+      setFilteredProducts(allProducts.slice(0, 4)); // ✅ only show latest 4
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      setLoading(false);
     }
-  }, [search, products]);
+  };
+
+  fetchProducts();
+}, []);
+
+// Filter products based on search
+useEffect(() => {
+  if (!search.trim()) {
+    // ✅ show latest 4 if no search
+    setFilteredProducts(products.slice(0, 4));
+  } else {
+    const searchLower = search.toLowerCase();
+    const filtered = products
+      .filter(
+        (product) =>
+          product.title.toLowerCase().includes(searchLower) ||
+          product.category.toLowerCase().includes(searchLower)
+      )
+      .slice(0, 4); // ✅ only latest 4 from search
+    setFilteredProducts(filtered);
+  }
+}, [search, products]);
+
 
   const handleSeeMore = () => {
     navigate("/for-you/all");
@@ -60,11 +62,11 @@ const ForYou = () => {
 
       {/* Search Section */}
       <div className="flex flex-col items-center ">
-        <p className="text-xl f text-gray-300 mb-3 text-center">
+        <p className="text-2xl font-semibold text-blue-950 mb-3 text-center">
            Search for products you love
         </p>
         <div className="relative w-full max-w-md">
-          <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200 text-xl" />
+          <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xl" />
           <input
             type="text"
             placeholder="Search products..."

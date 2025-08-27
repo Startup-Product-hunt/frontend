@@ -27,7 +27,7 @@ const ForYouCard = ({
       </div>
 
       {/* Content */}
-      <div className="h-[40%] p-3 flex flex-col bg-[#383838] justify-between">
+      <div className="h-[40%] p-3 text-white flex flex-col bg-[#383838] justify-between">
         <div>
           <p className="text-lg font-semibold">{title}</p>
           <p className="text-sm">{description}</p>
