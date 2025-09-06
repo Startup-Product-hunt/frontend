@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 const ForYouCard = ({
   title,
   description,
@@ -6,7 +8,15 @@ const ForYouCard = ({
   profileImage,
   category,
   price,
+  userId,
 }) => {
+  const navigate = useNavigate();
+
+  const handleNavigateProfile = () => {
+    if (userId) {
+      navigate(`/profile/${userId}`);
+    }
+  };
   return (
     <div className="w-full bg-white max-w-sm h-96 rounded-lg overflow-hidden shadow-lg flex flex-col">
       {/* Image with Category & Price */}
@@ -33,7 +43,10 @@ const ForYouCard = ({
           <p className="text-sm">{description}</p>
         </div>
 
-        <div className="flex items-center gap-2 mt-0">
+        <div
+          className="flex items-center gap-2 mt-0 cursor-pointer"
+          onClick={handleNavigateProfile}
+        >
           <img
             src={profileImage}
             alt="Profile"

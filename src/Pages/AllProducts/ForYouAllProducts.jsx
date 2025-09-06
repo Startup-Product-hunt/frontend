@@ -79,6 +79,7 @@ const ForYouAllProducts = () => {
                 profileImage={product.userId?.profilePic}
                 category={product.category}
                 price={product.price}
+                userId={product.userId?._id}
               />
             ))
           ) : (

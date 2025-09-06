@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { CiSearch } from "react-icons/ci";
 import ForYouCard from "../../Components/Cards/ForYouCard";
 import api from "../../api/axios";
 
@@ -33,22 +32,6 @@ const PaidTasks = () => {
     fetchProducts();
   }, []);
 
-  // Filter products based on search
-  // useEffect(() => {
-  //   if (!search.trim()) {
-  //     setFilteredProducts(products);
-  //   } else {
-  //     const searchLower = search.toLowerCase();
-  //     const filtered = products
-  //       .filter(
-  //         (product) =>
-  //           product.title.toLowerCase().includes(searchLower) ||
-  //           product.category.toLowerCase().includes(searchLower)
-  //       )
-  //       .slice(0, 4);
-  //     setFilteredProducts(filtered);
-  //   }
-  // }, [search, products]);
 
   const handleSeeMore = () => {
     navigate("/for-you/all");
@@ -58,22 +41,7 @@ const PaidTasks = () => {
     <div className="px-6 min-h-[70vh]">
       
 
-      {/* Search Section
-      <div className="flex flex-col items-center ">
-        <p className="text-xl f text-gray-300 mb-3 text-center">
-           Search for products you love
-        </p>
-        <div className="relative w-full max-w-md">
-          <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-200 text-xl" />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full border border-gray-300 rounded-md py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-300"
-          />
-        </div>
-      </div> */}
+     
   <p className="mt-10 md:mt-20 -mb-8 text-3xl font-bold">
     Today's Popular Pick
   </p>
@@ -104,6 +72,7 @@ const PaidTasks = () => {
               profileImage={product.userId?.profilePic}
               category={product.category}
               price={product.price}
+              userId={product.userId?._id}
             />
           ))
         ) : (

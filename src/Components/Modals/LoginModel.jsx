@@ -59,10 +59,12 @@ const LoginModal = ({ onSuccess, defaultView = "login", resetToken: propToken })
         name: res.data.name,
         email: res.data.email,
         role: res.data.role,
+        token: res.data.token, 
       };
 
       // persist + notify parent (Header) so it can switch to user icon immediately
       localStorage.setItem("user", JSON.stringify(userData));
+      localStorage.setItem("token", res.data.token);
       onSuccess?.(userData);
 
       toast.success("Welcome back " + res.data.name);

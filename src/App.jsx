@@ -11,6 +11,7 @@ import AllUser from "./Pages/AdminDashboard/AllUser";
 import AllCreatedTickets from "./Pages/AdminDashboard/AllCreatedTickets";
 import GoogleCallback from "./Pages/GoogleCallback";
 import ResetPasswordPage from "./Pages/ProfilePage/ResetPasswordPage";
+import UserProfile from "./Pages/OtherUserProfile/UserProfile";
 
 //testing
 function App() {
@@ -23,6 +24,7 @@ function App() {
     
         {/* User */}
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:userId" element={<UserProfile />} />
         <Route path="/profile/:token" element={<ResetPasswordPage />} />
 
        
