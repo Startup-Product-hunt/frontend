@@ -7,7 +7,6 @@
 ### 1. Clone the Repo
 ```bash
 git clone https://github.com/your-repo-url.git
-cd backend
 ```
 
 ### 2. Install Dependencies
